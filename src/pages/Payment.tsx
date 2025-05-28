@@ -20,8 +20,8 @@ const stripePromise = loadStripe(
 ); // la tua chiave pubblica
 
 interface PaymentParams {
-  experienceSlug?: string;
-  structureSlug?: string;
+  experienceSlug: string;
+  structureSlug: string;
 }
 
 const PaymentForm = ({
