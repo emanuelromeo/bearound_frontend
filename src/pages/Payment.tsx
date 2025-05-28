@@ -13,6 +13,8 @@ import {
 } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 
+const API_BASE_URL = "https://bearound.onrender.com";
+
 const stripePromise = loadStripe(
   "pk_live_51PTS8HLAayUIdszrvPRxa7HleENc28pHgkqM1QXQxNqgW7ABCTnvyNal7Gb5DuO2TysewfkFM1Lj7INFLoaUQzAW00aN9ubVQU",
 ); // la tua chiave pubblica
@@ -129,7 +131,7 @@ const Payment = () => {
         const toFormatted = format(dayEnd, "yyyy-MM-dd'T'HH:mm:ss");
 
         const response = await fetch(
-          `http://localhost:8080/experiences/is-available?id=${experienceSlug}&from=${fromFormatted}&to=${toFormatted}&zoneId=Europe/Rome`,
+          `${API_BASE_URL}/experiences/is-available?id=${experienceSlug}&from=${fromFormatted}&to=${toFormatted}&zoneId=Europe/Rome`,
         );
 
         if (response.ok) {
@@ -172,7 +174,7 @@ const Payment = () => {
       const formattedDate = format(date, "yyyy-MM-dd'T'HH:mm:ss");
 
       const response = await fetch(
-        "http://localhost:8080/api/payment/create-payment-intent",
+        "${API_BASE_URL}/api/payment/create-payment-intent",
         {
           method: "POST",
           headers: {

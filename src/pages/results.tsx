@@ -11,6 +11,8 @@ interface Experience {
   type: string;
 }
 
+const API_BASE_URL = "https://bearound.onrender.com";
+
 const Results = () => {
   const [experiences, setExperiences] = useState<Experience[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -36,7 +38,7 @@ const Results = () => {
 
         // Make API request
         const response = await fetch(
-          `http://localhost:8080/form/search-for-structure?${searchParams.toString()}`,
+          `${API_BASE_URL}/form/search-for-structure?${searchParams.toString()}`,
           {
             method: "GET",
             headers: {
