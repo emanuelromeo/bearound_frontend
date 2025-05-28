@@ -174,7 +174,7 @@ const Payment = () => {
       const formattedDate = format(date, "yyyy-MM-dd'T'HH:mm:ss");
 
       const response = await fetch(
-        '${API_BASE_URL}/api/payment/create-payment-intent',
+        `${API_BASE_URL}/api/payment/create-payment-intent`,
         {
           method: "POST",
           headers: {
