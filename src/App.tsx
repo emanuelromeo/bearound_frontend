@@ -15,10 +15,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/results" element={<Results />} />
-          <Route
-            path="/payment/:experienceSlug/:structureSlug"
-            element={<Payment />}
-          />
+          <Route path="/payment/:experienceSlug" element={<Payment />} />
           <Route path="/thank-you" element={<ThankYou />} />
         </Routes>
         {import.meta.env.VITE_TEMPO === "true" && useRoutes(routes)}

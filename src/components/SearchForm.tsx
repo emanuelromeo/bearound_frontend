@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { format } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
@@ -7,8 +7,14 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { Badge } from "@/components/ui/badge";
@@ -38,19 +44,59 @@ const experienceTypes: ExperienceType[] = [
   "NIGHT",
 ];
 
+interface Structure {
+  slug: string;
+  name: string;
+}
+
+const API_BASE_URL = "https://bearound.onrender.com";
+
 const SearchForm: React.FC = () => {
   const navigate = useNavigate();
-  const [structureId, setStructureId] = useState<string>("");
+  const [selectedStructure, setSelectedStructure] = useState<string>("");
+  const [structures, setStructures] = useState<Structure[]>([]);
+  const [loadingStructures, setLoadingStructures] = useState<boolean>(true);
   const [selectedType, setSelectedType] = useState<ExperienceType | null>(null);
   const [maxDistance, setMaxDistance] = useState<number>(30);
-  const [fromDate, setFromDate] = useState<Date | undefined>(new Date());
-  const [toDate, setToDate] = useState<Date | undefined>(new Date());
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(
+    new Date(),
+  );
+
+  useEffect(() => {
+    const fetchStructures = async () => {
+      try {
+        setLoadingStructures(true);
+        const response = await fetch(
+          `${API_BASE_URL}/structures/select-all-names`,
+        );
+        if (response.ok) {
+          const data = await response.json();
+          setStructures(data);
+        } else {
+          console.error("Failed to fetch structures");
+        }
+      } catch (error) {
+        console.error("Error fetching structures:", error);
+      } finally {
+        setLoadingStructures(false);
+      }
+    };
+
+    fetchStructures();
+  }, []);
 
   const handleSearch = () => {
-    if (!structureId || !fromDate || !toDate) {
+    if (!selectedStructure || !selectedDate) {
       // Show validation error
       return;
     }
+
+    // Create from and to dates for the selected day
+    const fromDate = new Date(selectedDate);
+    fromDate.setHours(0, 0, 0, 0);
+
+    const toDate = new Date(selectedDate);
+    toDate.setHours(23, 59, 59, 999);
 
     // Format dates to ISO string for API
     const fromDateISO = fromDate.toISOString();
@@ -58,7 +104,7 @@ const SearchForm: React.FC = () => {
 
     // Build query parameters
     const params = new URLSearchParams();
-    params.append("structureId", structureId);
+    params.append("structureId", selectedStructure);
     params.append("from", fromDateISO);
     params.append("to", toDateISO);
 
@@ -88,14 +134,28 @@ const SearchForm: React.FC = () => {
       <CardContent className="p-6">
         <div className="space-y-6">
           <div className="space-y-2">
-            <Label htmlFor="structureId">Structure ID</Label>
-            <Input
-              id="structureId"
-              placeholder="Enter structure ID"
-              value={structureId}
-              onChange={(e) => setStructureId(e.target.value)}
-              required
-            />
+            <Label htmlFor="structure">Struttura</Label>
+            <Select
+              value={selectedStructure}
+              onValueChange={setSelectedStructure}
+            >
+              <SelectTrigger>
+                <SelectValue
+                  placeholder={
+                    loadingStructures
+                      ? "Caricamento..."
+                      : "Seleziona una struttura"
+                  }
+                />
+              </SelectTrigger>
+              <SelectContent>
+                {structures.map((structure) => (
+                  <SelectItem key={structure.slug} value={structure.slug}>
+                    {structure.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
           <div className="space-y-2">
@@ -133,64 +193,39 @@ const SearchForm: React.FC = () => {
             />
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label>From Date</Label>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className="w-full justify-start text-left font-normal"
-                  >
-                    <CalendarIcon className="mr-2 h-4 w-4" />
-                    {fromDate ? (
-                      format(fromDate, "PPP")
-                    ) : (
-                      <span>Pick a date</span>
-                    )}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
-                  <Calendar
-                    mode="single"
-                    selected={fromDate}
-                    onSelect={setFromDate}
-                    initialFocus
-                  />
-                </PopoverContent>
-              </Popover>
-            </div>
-
-            <div className="space-y-2">
-              <Label>To Date</Label>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className="w-full justify-start text-left font-normal"
-                  >
-                    <CalendarIcon className="mr-2 h-4 w-4" />
-                    {toDate ? format(toDate, "PPP") : <span>Pick a date</span>}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
-                  <Calendar
-                    mode="single"
-                    selected={toDate}
-                    onSelect={setToDate}
-                    initialFocus
-                  />
-                </PopoverContent>
-              </Popover>
-            </div>
+          <div className="space-y-2">
+            <Label>Data</Label>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  className="w-full justify-start text-left font-normal"
+                >
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {selectedDate ? (
+                    format(selectedDate, "PPP")
+                  ) : (
+                    <span>Seleziona una data</span>
+                  )}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="start">
+                <Calendar
+                  mode="single"
+                  selected={selectedDate}
+                  onSelect={setSelectedDate}
+                  initialFocus
+                />
+              </PopoverContent>
+            </Popover>
           </div>
 
           <Button
             className="w-full"
             onClick={handleSearch}
-            disabled={!structureId || !fromDate || !toDate}
+            disabled={!selectedStructure || !selectedDate || loadingStructures}
           >
-            Search Experiences
+            Cerca Esperienze
           </Button>
         </div>
       </CardContent>

@@ -4,6 +4,14 @@ import { format, startOfMonth, endOfMonth, addMonths } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Loader2 } from "lucide-react";
 import {
   PaymentElement,
@@ -21,15 +29,21 @@ const stripePromise = loadStripe(
 
 interface PaymentParams {
   experienceSlug: string;
-  structureSlug: string;
+}
+
+interface Structure {
+  slug: string;
+  name: string;
 }
 
 const PaymentForm = ({
   clientSecret,
   experienceSlug,
+  totalAmount,
 }: {
   clientSecret: string;
   experienceSlug: string;
+  totalAmount?: number;
 }) => {
   const stripe = useStripe();
   const elements = useElements();
@@ -58,6 +72,18 @@ const PaymentForm = ({
 
   return (
     <form onSubmit={handlePayment} className="space-y-6">
+      <div className="bg-gray-50 p-4 rounded-md">
+        <div className="flex justify-between items-center">
+          <span className="text-lg font-medium">Totale:</span>
+          <span className="text-xl font-bold text-primary">
+            €
+            {totalAmount !== undefined && totalAmount !== null
+              ? (totalAmount / 100).toFixed(2)
+              : "0.00"}
+          </span>
+        </div>
+      </div>
+
       <div className="space-y-2">
         <label className="block text-sm font-medium">Metodo di pagamento</label>
         <div className="border p-3 rounded-md">
@@ -86,11 +112,15 @@ const PaymentForm = ({
 };
 
 const Payment = () => {
-  const { experienceSlug, structureSlug } = useParams<PaymentParams>();
+  const { experienceSlug } = useParams<PaymentParams>();
   const [date, setDate] = useState<Date>();
   const [participants, setParticipants] = useState<number>(1);
   const [needsTransport, setNeedsTransport] = useState<boolean>(false);
+  const [selectedStructure, setSelectedStructure] = useState<string>("");
+  const [structures, setStructures] = useState<Structure[]>([]);
+  const [loadingStructures, setLoadingStructures] = useState<boolean>(false);
   const [clientSecret, setClientSecret] = useState<string | null>(null);
+  const [totalAmount, setTotalAmount] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [availableDates, setAvailableDates] = useState<Date[]>([]);
@@ -105,6 +135,31 @@ const Payment = () => {
       fetchAvailableDates(currentMonth);
     }
   }, [experienceSlug, currentMonth]);
+
+  useEffect(() => {
+    if (needsTransport && structures.length === 0) {
+      fetchStructures();
+    }
+  }, [needsTransport]);
+
+  const fetchStructures = async () => {
+    try {
+      setLoadingStructures(true);
+      const response = await fetch(
+        `${API_BASE_URL}/structures/select-all-names`,
+      );
+      if (response.ok) {
+        const data = await response.json();
+        setStructures(data);
+      } else {
+        console.error("Failed to fetch structures");
+      }
+    } catch (error) {
+      console.error("Error fetching structures:", error);
+    } finally {
+      setLoadingStructures(false);
+    }
+  };
 
   const fetchAvailableDates = async (month: Date) => {
     if (!experienceSlug) return;
@@ -162,8 +217,13 @@ const Payment = () => {
 
   const handleCreateIntent = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!experienceSlug || !structureSlug || !date) {
-      setError("Compila tutti i campi");
+    if (!experienceSlug || !date) {
+      setError("Compila tutti i campi obbligatori");
+      return;
+    }
+
+    if (needsTransport && !selectedStructure) {
+      setError("Seleziona una struttura per il trasporto");
       return;
     }
 
@@ -173,20 +233,25 @@ const Payment = () => {
     try {
       const formattedDate = format(date, "yyyy-MM-dd'T'HH:mm:ss");
 
+      const requestBody = new URLSearchParams({
+        experienceSlug,
+        numberOfParticipants: participants.toString(),
+        date: formattedDate,
+        needsTransport: needsTransport.toString(),
+      });
+
+      if (needsTransport && selectedStructure) {
+        requestBody.append("structureSlug", selectedStructure);
+      }
+
       const response = await fetch(
-        "${API_BASE_URL}/api/payment/create-payment-intent",
+        `${API_BASE_URL}/api/payment/create-payment-intent`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/x-www-form-urlencoded",
           },
-          body: new URLSearchParams({
-            experienceSlug,
-            structureSlug,
-            numberOfParticipants: participants.toString(),
-            date: formattedDate,
-            needsTransport: needsTransport.toString(),
-          }),
+          body: requestBody,
         },
       );
 
@@ -196,6 +261,9 @@ const Payment = () => {
 
       const data = await response.json();
       setClientSecret(data.clientSecret);
+      if (data.totalAmount) {
+        setTotalAmount(parseInt(data.totalAmount));
+      }
     } catch (err) {
       console.error(err);
       setError("Errore durante la creazione del pagamento");
@@ -274,17 +342,51 @@ const Payment = () => {
               />
             </div>
 
-            <div className="flex items-center space-x-2">
-              <input
-                id="transport"
-                type="checkbox"
-                checked={needsTransport}
-                onChange={(e) => setNeedsTransport(e.target.checked)}
-                className="h-4 w-4"
-              />
-              <label htmlFor="transport" className="text-sm font-medium">
-                Ho bisogno di trasporto
-              </label>
+            <div className="space-y-4">
+              <div className="flex items-center space-x-2">
+                <input
+                  id="transport"
+                  type="checkbox"
+                  checked={needsTransport}
+                  onChange={(e) => {
+                    setNeedsTransport(e.target.checked);
+                    if (!e.target.checked) {
+                      setSelectedStructure("");
+                    }
+                  }}
+                  className="h-4 w-4"
+                />
+                <label htmlFor="transport" className="text-sm font-medium">
+                  Ho bisogno di trasporto
+                </label>
+              </div>
+
+              {needsTransport && (
+                <div className="space-y-2">
+                  <Label htmlFor="structure">Struttura per il trasporto</Label>
+                  <Select
+                    value={selectedStructure}
+                    onValueChange={setSelectedStructure}
+                  >
+                    <SelectTrigger>
+                      <SelectValue
+                        placeholder={
+                          loadingStructures
+                            ? "Caricamento..."
+                            : "Seleziona una struttura"
+                        }
+                      />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {structures.map((structure) => (
+                        <SelectItem key={structure.slug} value={structure.slug}>
+                          {structure.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
             </div>
 
             <Button type="submit" className="w-full" disabled={loading}>
@@ -310,6 +412,7 @@ const Payment = () => {
           <PaymentForm
             clientSecret={clientSecret}
             experienceSlug={experienceSlug!}
+            totalAmount={totalAmount ?? undefined}
           />
         </Elements>
       </div>
