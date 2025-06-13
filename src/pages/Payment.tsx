@@ -72,10 +72,10 @@ const PaymentForm = ({
 
   return (
     <form onSubmit={handlePayment} className="space-y-6">
-      <div className="bg-gray-50 p-4 rounded-md">
+      <div className="bg-gray-50 p-4 rounded-md shadow-custom">
         <div className="flex justify-between items-center">
-          <span className="text-lg font-medium">Totale:</span>
-          <span className="text-xl font-bold text-primary">
+          <span className="text-subtitle font-semibold">Totale:</span>
+          <span className="text-title font-semibold text-primary">
             €
             {totalAmount !== undefined && totalAmount !== null
               ? (totalAmount / 100).toFixed(2)
@@ -85,7 +85,9 @@ const PaymentForm = ({
       </div>
 
       <div className="space-y-2">
-        <label className="block text-sm font-medium">Metodo di pagamento</label>
+        <label className="block text-body font-medium">
+          Metodo di pagamento
+        </label>
         <div className="border p-3 rounded-md">
           <PaymentElement />
         </div>
@@ -276,7 +278,9 @@ const Payment = () => {
     return (
       <div className="min-h-screen bg-background p-6 md:p-10">
         <div className="max-w-md mx-auto bg-white rounded-lg shadow-md p-6">
-          <h1 className="text-2xl font-bold mb-6">Prenota la tua esperienza</h1>
+          <h1 className="text-title font-semibold mb-6">
+            Prenota la tua esperienza
+          </h1>
 
           {error && (
             <div className="mb-4 p-3 bg-destructive/10 text-destructive rounded-md">
@@ -286,49 +290,52 @@ const Payment = () => {
 
           <form onSubmit={handleCreateIntent} className="space-y-6">
             <div className="space-y-2">
-              <label className="block text-sm font-medium">
+              <label className="block text-subtitle font-semibold">
                 Data dell'esperienza
               </label>
               <div className="border rounded-md p-2">
-                {isCheckingAvailability ? (
-                  <div className="flex flex-col items-center justify-center py-8">
-                    <Loader2 className="h-8 w-8 animate-spin mb-2 text-primary" />
-                    <p className="text-sm text-muted-foreground text-center">
-                      Stiamo controllando la disponibilità per questa esperienza
-                    </p>
-                  </div>
-                ) : (
-                  <Calendar
-                    mode="single"
-                    selected={date}
-                    onSelect={setDate}
-                    month={currentMonth}
-                    disabled={(d) => {
-                      const today = new Date();
-                      today.setHours(0, 0, 0, 0);
+                <div className="calendar-container">
+                  {isCheckingAvailability ? (
+                    <div className="calendar-loading">
+                      <Loader2 className="h-8 w-8 animate-spin mb-2 text-primary" />
+                      <p className="text-detail text-muted-foreground text-center">
+                        Stiamo controllando la disponibilità per questa
+                        esperienza
+                      </p>
+                    </div>
+                  ) : (
+                    <Calendar
+                      mode="single"
+                      selected={date}
+                      onSelect={setDate}
+                      month={currentMonth}
+                      disabled={(d) => {
+                        const today = new Date();
+                        today.setHours(0, 0, 0, 0);
 
-                      // Disable dates in the past and dates not in availableDates
-                      return (
-                        d < today ||
-                        !availableDates.some(
-                          (availableDate) =>
-                            availableDate.getDate() === d.getDate() &&
-                            availableDate.getMonth() === d.getMonth() &&
-                            availableDate.getFullYear() === d.getFullYear(),
-                        )
-                      );
-                    }}
-                    onMonthChange={handleMonthChange}
-                    className="mx-auto"
-                  />
-                )}
+                        // Disable dates in the past and dates not in availableDates
+                        return (
+                          d < today ||
+                          !availableDates.some(
+                            (availableDate) =>
+                              availableDate.getDate() === d.getDate() &&
+                              availableDate.getMonth() === d.getMonth() &&
+                              availableDate.getFullYear() === d.getFullYear(),
+                          )
+                        );
+                      }}
+                      onMonthChange={handleMonthChange}
+                      className="mx-auto"
+                    />
+                  )}
+                </div>
               </div>
             </div>
 
             <div className="space-y-2">
               <label
                 htmlFor="participants"
-                className="block text-sm font-medium"
+                className="block text-body font-medium"
               >
                 Numero di partecipanti
               </label>
@@ -356,14 +363,16 @@ const Payment = () => {
                   }}
                   className="h-4 w-4"
                 />
-                <label htmlFor="transport" className="text-sm font-medium">
+                <label htmlFor="transport" className="text-body font-medium">
                   Ho bisogno di trasporto
                 </label>
               </div>
 
               {needsTransport && (
                 <div className="space-y-2">
-                  <Label htmlFor="structure">Struttura per il trasporto</Label>
+                  <Label htmlFor="structure" className="text-body font-medium">
+                    Struttura per il trasporto
+                  </Label>
                   <Select
                     value={selectedStructure}
                     onValueChange={setSelectedStructure}

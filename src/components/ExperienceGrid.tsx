@@ -24,7 +24,7 @@ const ExperienceGrid = ({
     return (
       <div className="flex flex-col items-center justify-center min-h-[400px] bg-background">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary mb-4"></div>
-        <p className="text-lg text-center text-muted-foreground">
+        <p className="text-subtitle text-center text-muted-foreground">
           Stiamo cercando le tue esperienze
         </p>
       </div>
@@ -34,7 +34,7 @@ const ExperienceGrid = ({
   if (experiences.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[400px] bg-background">
-        <p className="text-lg text-center text-muted-foreground">
+        <p className="text-subtitle text-center text-muted-foreground">
           Nessuna esperienza trovata
         </p>
       </div>
@@ -89,8 +89,10 @@ const ExperienceCard = ({ experience }: ExperienceCardProps) => {
           )}
         </div>
         <CardContent className="p-4">
-          <h3 className="font-medium text-lg mb-1 line-clamp-2">{name}</h3>
-          <p className="text-sm text-muted-foreground">
+          <h3 className="font-semibold text-subtitle mb-1 line-clamp-2">
+            {name}
+          </h3>
+          <p className="text-detail text-muted-foreground">
             A partire da {price}€ a persona
           </p>
         </CardContent>

@@ -1,46 +1,44 @@
 {
   "typography": [
     {
-      "name": "Header 1",
+      "name": "Title",
       "preview": "Aa",
       "tag": "h1",
       "classes": [
-        "text-4xl",
-        "font-extrabold",
-        "tracking-tight",
-        "lg:text-5xl"
+        "text-title",
+        "font-semibold"
       ],
-      "previewClasses": ["text-3xl", "font-extrabold", "tracking-tight"]
+      "previewClasses": ["text-title", "font-semibold"]
     },
     {
-      "name": "Header 2",
+      "name": "Subtitle",
       "preview": "Aa",
       "tag": "h2",
-      "classes": ["text-3xl", "font-semibold", "tracking-tight"]
+      "classes": ["text-subtitle", "font-semibold"]
     },
     {
-      "name": "Header 3",
+      "name": "Body",
       "preview": "Aa",
-      "tag": "h3",
-      "classes": ["text-2xl", "font-semibold", "tracking-tight"]
+      "tag": "p",
+      "classes": ["text-body", "font-normal"]
     },
     {
-      "name": "Header 4",
+      "name": "Detail",
       "preview": "Aa",
-      "tag": "h4",
-      "classes": ["text-xl", "font-semibold", "tracking-tight"]
+      "tag": "p",
+      "classes": ["text-detail", "font-normal"]
     },
     {
       "name": "Paragraph",
       "preview": "¶",
       "tag": "p",
-      "classes": ["leading-7"]
+      "classes": ["text-body", "leading-7"]
     },
     {
       "name": "Lead Text",
       "preview": "A",
       "tag": "p",
-      "classes": ["text-xl", "text-muted-foreground"]
+      "classes": ["text-subtitle", "text-muted-foreground"]
     },
     {
       "name": "Blockquote",

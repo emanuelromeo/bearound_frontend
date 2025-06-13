@@ -2,10 +2,10 @@
 module.exports = {
   darkMode: ["class"],
   content: [
-    './pages/**/*.{ts,tsx}',
-    './components/**/*.{ts,tsx}',
-    './app/**/*.{ts,tsx}',
-    './src/**/*.{ts,tsx}',
+    "./pages/**/*.{ts,tsx}",
+    "./components/**/*.{ts,tsx}",
+    "./app/**/*.{ts,tsx}",
+    "./src/**/*.{ts,tsx}",
   ],
   prefix: "",
   theme: {
@@ -17,6 +17,15 @@ module.exports = {
       },
     },
     extend: {
+      fontFamily: {
+        sans: ["Montserrat", "sans-serif"],
+      },
+      fontSize: {
+        title: ["24px", { lineHeight: "1.2", fontWeight: "600" }],
+        subtitle: ["18px", { lineHeight: "1.3", fontWeight: "600" }],
+        body: ["16px", { lineHeight: "1.5", fontWeight: "400" }],
+        detail: ["14px", { lineHeight: "1.4", fontWeight: "400" }],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -57,6 +66,13 @@ module.exports = {
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
+      boxShadow: {
+        custom: "0 4px 10px 0 rgba(0, 0, 0, 0.1)",
+        sm: "0 4px 10px 0 rgba(0, 0, 0, 0.1)",
+        md: "0 4px 10px 0 rgba(0, 0, 0, 0.1)",
+        lg: "0 4px 10px 0 rgba(0, 0, 0, 0.1)",
+        xl: "0 4px 10px 0 rgba(0, 0, 0, 0.1)",
+      },
       keyframes: {
         "accordion-down": {
           from: { height: "0" },
@@ -74,4 +90,4 @@ module.exports = {
     },
   },
   plugins: [require("tailwindcss-animate")],
-}
+};

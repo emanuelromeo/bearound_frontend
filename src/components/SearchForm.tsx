@@ -130,11 +130,13 @@ const SearchForm: React.FC = () => {
   };
 
   return (
-    <Card className="w-full max-w-2xl mx-auto bg-white shadow-md">
+    <Card className="w-full max-w-2xl mx-auto bg-white shadow-custom">
       <CardContent className="p-6">
         <div className="space-y-6">
           <div className="space-y-2">
-            <Label htmlFor="structure">Struttura</Label>
+            <Label htmlFor="structure" className="text-body font-medium">
+              Struttura
+            </Label>
             <Select
               value={selectedStructure}
               onValueChange={setSelectedStructure}
@@ -159,13 +161,13 @@ const SearchForm: React.FC = () => {
           </div>
 
           <div className="space-y-2">
-            <Label>Experience Type</Label>
+            <Label className="text-body font-medium">Experience Type</Label>
             <div className="flex flex-wrap gap-2">
               {experienceTypes.map((type) => (
                 <Badge
                   key={type}
                   variant={selectedType === type ? "default" : "outline"}
-                  className="cursor-pointer hover:bg-primary/80 transition-colors"
+                  className="cursor-pointer hover:bg-secondary hover:text-secondary-foreground transition-colors"
                   onClick={() =>
                     setSelectedType(type === selectedType ? null : type)
                   }
@@ -178,8 +180,10 @@ const SearchForm: React.FC = () => {
 
           <div className="space-y-2">
             <div className="flex justify-between">
-              <Label htmlFor="maxDistance">Maximum Distance (minutes)</Label>
-              <span className="text-sm text-muted-foreground">
+              <Label htmlFor="maxDistance" className="text-body font-medium">
+                Maximum Distance (minutes)
+              </Label>
+              <span className="text-detail text-muted-foreground">
                 {maxDistance} min
               </span>
             </div>
@@ -194,7 +198,7 @@ const SearchForm: React.FC = () => {
           </div>
 
           <div className="space-y-2">
-            <Label>Data</Label>
+            <Label className="text-body font-medium">Data</Label>
             <Popover>
               <PopoverTrigger asChild>
                 <Button

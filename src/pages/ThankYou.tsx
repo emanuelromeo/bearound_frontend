@@ -25,7 +25,7 @@ const ThankYou = () => {
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-6">
-      <div className="max-w-md w-full bg-white rounded-lg shadow-md p-8 text-center">
+      <div className="max-w-md w-full bg-white rounded-lg shadow-custom p-8 text-center">
         <div className="mb-6">
           <svg
             className="mx-auto h-16 w-16 text-green-500"
@@ -43,9 +43,11 @@ const ThankYou = () => {
           </svg>
         </div>
 
-        <h1 className="text-2xl font-bold mb-2">Grazie per il tuo acquisto!</h1>
+        <h1 className="text-title font-semibold mb-2">
+          Grazie per il tuo acquisto!
+        </h1>
 
-        <p className="text-gray-600 mb-6">
+        <p className="text-body text-muted-foreground mb-6">
           {experience ? (
             <>
               La tua prenotazione per{" "}
@@ -57,7 +59,7 @@ const ThankYou = () => {
           )}
         </p>
 
-        <p className="text-sm text-gray-500 mb-8">
+        <p className="text-detail text-muted-foreground mb-8">
           Riceverai presto una email con tutti i dettagli della tua
           prenotazione.
         </p>
