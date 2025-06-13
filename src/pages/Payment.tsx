@@ -72,16 +72,14 @@ const PaymentForm = ({
 
   return (
     <form onSubmit={handlePayment} className="space-y-6">
-      <div className="bg-gray-50 p-4 rounded-md shadow-custom">
-        <div className="flex justify-between items-center">
-          <span className="text-subtitle font-semibold">Totale:</span>
-          <span className="text-title font-semibold text-primary">
-            €
-            {totalAmount !== undefined && totalAmount !== null
-              ? (totalAmount / 100).toFixed(2)
-              : "0.00"}
-          </span>
-        </div>
+      <div className="flex justify-between items-center">
+        <span className="text-subtitle font-semibold">Totale:</span>
+        <span className="text-title font-semibold text-primary">
+          €
+          {totalAmount !== undefined && totalAmount !== null
+            ? (totalAmount / 100).toFixed(2)
+            : "0.00"}
+        </span>
       </div>
 
       <div className="space-y-2">
@@ -276,7 +274,7 @@ const Payment = () => {
 
   if (!clientSecret) {
     return (
-      <div className="min-h-screen bg-background p-6 md:p-10">
+      <div className="min-h-screen bg-background pt-16 pb-6 px-6 md:px-10">
         <div className="max-w-md mx-auto bg-white rounded-lg shadow-md p-6">
           <h1 className="text-title font-semibold mb-6">
             Prenota la tua esperienza
@@ -415,7 +413,7 @@ const Payment = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background p-6 md:p-10">
+    <div className="min-h-screen bg-background pt-16 pb-6 px-6 md:px-10">
       <div className="max-w-md mx-auto bg-white rounded-lg shadow-md p-6">
         <Elements stripe={stripePromise} options={{ clientSecret }}>
           <PaymentForm

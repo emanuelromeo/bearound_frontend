@@ -24,7 +24,7 @@ const ThankYou = () => {
   }, [experienceSlug]);
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-6">
+    <div className="min-h-screen bg-background flex items-center justify-center pt-16 pb-6 px-6">
       <div className="max-w-md w-full bg-white rounded-lg shadow-custom p-8 text-center">
         <div className="mb-6">
           <svg

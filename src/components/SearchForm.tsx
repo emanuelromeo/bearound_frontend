@@ -130,110 +130,108 @@ const SearchForm: React.FC = () => {
   };
 
   return (
-    <Card className="w-full max-w-2xl mx-auto bg-white shadow-custom">
-      <CardContent className="p-6">
-        <div className="space-y-6">
-          <div className="space-y-2">
-            <Label htmlFor="structure" className="text-body font-medium">
-              Struttura
-            </Label>
-            <Select
-              value={selectedStructure}
-              onValueChange={setSelectedStructure}
-            >
-              <SelectTrigger>
-                <SelectValue
-                  placeholder={
-                    loadingStructures
-                      ? "Caricamento..."
-                      : "Seleziona una struttura"
-                  }
-                />
-              </SelectTrigger>
-              <SelectContent>
-                {structures.map((structure) => (
-                  <SelectItem key={structure.slug} value={structure.slug}>
-                    {structure.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="space-y-2">
-            <Label className="text-body font-medium">Experience Type</Label>
-            <div className="flex flex-wrap gap-2">
-              {experienceTypes.map((type) => (
-                <Badge
-                  key={type}
-                  variant={selectedType === type ? "default" : "outline"}
-                  className="cursor-pointer hover:bg-secondary hover:text-secondary-foreground transition-colors"
-                  onClick={() =>
-                    setSelectedType(type === selectedType ? null : type)
-                  }
-                >
-                  {type.charAt(0) + type.slice(1).toLowerCase()}
-                </Badge>
-              ))}
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <div className="flex justify-between">
-              <Label htmlFor="maxDistance" className="text-body font-medium">
-                Maximum Distance (minutes)
-              </Label>
-              <span className="text-detail text-muted-foreground">
-                {maxDistance} min
-              </span>
-            </div>
-            <Slider
-              id="maxDistance"
-              min={5}
-              max={120}
-              step={5}
-              value={[maxDistance]}
-              onValueChange={(values) => setMaxDistance(values[0])}
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label className="text-body font-medium">Data</Label>
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  className="w-full justify-start text-left font-normal"
-                >
-                  <CalendarIcon className="mr-2 h-4 w-4" />
-                  {selectedDate ? (
-                    format(selectedDate, "PPP")
-                  ) : (
-                    <span>Seleziona una data</span>
-                  )}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="start">
-                <Calendar
-                  mode="single"
-                  selected={selectedDate}
-                  onSelect={setSelectedDate}
-                  initialFocus
-                />
-              </PopoverContent>
-            </Popover>
-          </div>
-
-          <Button
-            className="w-full"
-            onClick={handleSearch}
-            disabled={!selectedStructure || !selectedDate || loadingStructures}
+    <CardContent className="p-6">
+      <div className="space-y-6">
+        <div className="space-y-2">
+          <Label htmlFor="structure" className="text-body font-medium">
+            Struttura
+          </Label>
+          <Select
+            value={selectedStructure}
+            onValueChange={setSelectedStructure}
           >
-            Cerca Esperienze
-          </Button>
+            <SelectTrigger>
+              <SelectValue
+                placeholder={
+                  loadingStructures
+                    ? "Caricamento..."
+                    : "Seleziona una struttura"
+                }
+              />
+            </SelectTrigger>
+            <SelectContent>
+              {structures.map((structure) => (
+                <SelectItem key={structure.slug} value={structure.slug}>
+                  {structure.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
-      </CardContent>
-    </Card>
+
+        <div className="space-y-2">
+          <Label className="text-body font-medium">Experience Type</Label>
+          <div className="flex flex-wrap gap-2">
+            {experienceTypes.map((type) => (
+              <Badge
+                key={type}
+                variant={selectedType === type ? "default" : "outline"}
+                className="cursor-pointer hover:bg-secondary hover:text-secondary-foreground transition-colors"
+                onClick={() =>
+                  setSelectedType(type === selectedType ? null : type)
+                }
+              >
+                {type.charAt(0) + type.slice(1).toLowerCase()}
+              </Badge>
+            ))}
+          </div>
+        </div>
+
+        <div className="space-y-2">
+          <div className="flex justify-between">
+            <Label htmlFor="maxDistance" className="text-body font-medium">
+              Maximum Distance (minutes)
+            </Label>
+            <span className="text-detail text-muted-foreground">
+              {maxDistance} min
+            </span>
+          </div>
+          <Slider
+            id="maxDistance"
+            min={5}
+            max={120}
+            step={5}
+            value={[maxDistance]}
+            onValueChange={(values) => setMaxDistance(values[0])}
+          />
+        </div>
+
+        <div className="space-y-2">
+          <Label className="text-body font-medium">Data</Label>
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button
+                variant="outline"
+                className="w-full justify-start text-left font-normal"
+              >
+                <CalendarIcon className="mr-2 h-4 w-4" />
+                {selectedDate ? (
+                  format(selectedDate, "PPP")
+                ) : (
+                  <span>Seleziona una data</span>
+                )}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0" align="start">
+              <Calendar
+                mode="single"
+                selected={selectedDate}
+                onSelect={setSelectedDate}
+                initialFocus
+              />
+            </PopoverContent>
+          </Popover>
+        </div>
+
+        <Button
+          className="w-full"
+          onClick={handleSearch}
+          disabled={!selectedStructure || !selectedDate || loadingStructures}
+        >
+          Cerca Esperienze
+        </Button>
+      </div>
+    </CardContent>
   );
 };
 
