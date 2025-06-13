@@ -70,7 +70,7 @@ const Results = () => {
   }, [location.search]);
 
   return (
-    <div className="min-h-screen bg-background pt-16 pb-6 px-6 md:px-10">
+    <div className="min-h-screen bg-background pt-24 pb-6 px-6 md:px-10">
       <div className="max-w-7xl mx-auto">
         <h1 className="text-title font-semibold mb-6">Search Results</h1>
 

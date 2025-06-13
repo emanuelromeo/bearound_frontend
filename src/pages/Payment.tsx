@@ -274,7 +274,7 @@ const Payment = () => {
 
   if (!clientSecret) {
     return (
-      <div className="min-h-screen bg-background pt-16 pb-6 px-6 md:px-10">
+      <div className="min-h-screen bg-background pt-24 pb-6 px-6 md:px-10">
         <div className="max-w-md mx-auto bg-white rounded-lg shadow-md p-6">
           <h1 className="text-title font-semibold mb-6">
             Prenota la tua esperienza
@@ -413,7 +413,7 @@ const Payment = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background pt-16 pb-6 px-6 md:px-10">
+    <div className="min-h-screen bg-background pt-24 pb-6 px-6 md:px-10">
       <div className="max-w-md mx-auto bg-white rounded-lg shadow-md p-6">
         <Elements stripe={stripePromise} options={{ clientSecret }}>
           <PaymentForm
