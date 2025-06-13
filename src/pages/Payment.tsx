@@ -101,10 +101,10 @@ const PaymentForm = ({
         {loading ? (
           <>
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            Conferma pagamento...
+            CONFERMA PAGAMENTO...
           </>
         ) : (
-          "Conferma pagamento"
+          "CONFERMA PAGAMENTO"
         )}
       </Button>
     </form>
@@ -400,10 +400,10 @@ const Payment = () => {
               {loading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Elaborazione...
+                  ELABORAZIONE...
                 </>
               ) : (
-                "Procedi al pagamento"
+                "PROCEDI AL PAGAMENTO"
               )}
             </Button>
           </form>

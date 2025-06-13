@@ -88,7 +88,7 @@ const Results = () => {
               onClick={() => window.history.back()}
               className="mt-4 px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90"
             >
-              Go Back
+              INDIETRO
             </button>
           </div>
         ) : experiences.length === 0 ? (
@@ -100,7 +100,7 @@ const Results = () => {
               onClick={() => window.history.back()}
               className="mt-4 px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90"
             >
-              Go Back
+              INDIETRO
             </button>
           </div>
         ) : (

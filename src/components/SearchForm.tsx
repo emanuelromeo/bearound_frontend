@@ -228,7 +228,7 @@ const SearchForm: React.FC = () => {
           onClick={handleSearch}
           disabled={!selectedStructure || !selectedDate || loadingStructures}
         >
-          Cerca Esperienze
+          CERCA ESPERIENZE
         </Button>
       </div>
     </CardContent>

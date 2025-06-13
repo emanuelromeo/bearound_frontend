@@ -63,24 +63,6 @@ const ThankYou = () => {
           Riceverai presto una email con tutti i dettagli della tua
           prenotazione.
         </p>
-
-        <div className="space-y-4">
-          <Button asChild className="w-full">
-            <Link to="/">Torna alla home</Link>
-          </Button>
-
-          {experience && (
-            <Button variant="outline" asChild className="w-full">
-              <a
-                href={`https://www.bearound.eu/esperienze/${experience.slug}`}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Visualizza esperienza
-              </a>
-            </Button>
-          )}
-        </div>
       </div>
     </div>
   );
