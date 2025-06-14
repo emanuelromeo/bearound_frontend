@@ -40,10 +40,12 @@ const PaymentForm = ({
   clientSecret,
   experienceSlug,
   totalAmount,
+  onPaymentSuccess,
 }: {
   clientSecret: string;
   experienceSlug: string;
   totalAmount?: number;
+  onPaymentSuccess: () => void;
 }) => {
   const stripe = useStripe();
   const elements = useElements();
@@ -59,12 +61,15 @@ const PaymentForm = ({
     const { error } = await stripe.confirmPayment({
       elements,
       confirmParams: {
-        return_url: `${window.location.origin}/thank-you?experience=${experienceSlug}`,
+        return_url: `${window.location.origin}/payment/${experienceSlug}`,
       },
     });
 
     if (error) {
       setError(error.message || "Errore durante il pagamento");
+    } else {
+      // Payment successful, show thank you message
+      onPaymentSuccess();
     }
 
     setLoading(false);
@@ -127,6 +132,7 @@ const Payment = () => {
   const [currentMonth, setCurrentMonth] = useState<Date>(new Date());
   const [isCheckingAvailability, setIsCheckingAvailability] =
     useState<boolean>(false);
+  const [paymentCompleted, setPaymentCompleted] = useState<boolean>(false);
 
   useEffect(() => {
     if (experienceSlug) {
@@ -271,6 +277,45 @@ const Payment = () => {
       setLoading(false);
     }
   };
+
+  // Show thank you message after successful payment
+  if (paymentCompleted) {
+    return (
+      <div className="min-h-screen bg-background pt-24 pb-6 px-6 md:px-10">
+        <div className="max-w-md mx-auto bg-white rounded-lg p-8 text-center">
+          <div className="mb-6">
+            <svg
+              className="mx-auto h-16 w-16 text-green-500"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              aria-hidden="true"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M5 13l4 4L19 7"
+              />
+            </svg>
+          </div>
+
+          <h1 className="text-title font-semibold mb-2">
+            Grazie per il tuo acquisto!
+          </h1>
+
+          <p className="text-body text-muted-foreground mb-6">
+            La tua prenotazione è stata confermata.
+          </p>
+
+          <p className="text-detail text-muted-foreground mb-8">
+            Riceverai presto una email con tutti i dettagli della tua
+            prenotazione.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   if (!clientSecret) {
     return (
@@ -420,6 +465,7 @@ const Payment = () => {
             clientSecret={clientSecret}
             experienceSlug={experienceSlug!}
             totalAmount={totalAmount ?? undefined}
+            onPaymentSuccess={() => setPaymentCompleted(true)}
           />
         </Elements>
       </div>
