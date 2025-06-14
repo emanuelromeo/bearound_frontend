@@ -41,11 +41,13 @@ const PaymentForm = ({
   experienceSlug,
   totalAmount,
   onPaymentSuccess,
+  onPaymentError,
 }: {
   clientSecret: string;
   experienceSlug: string;
   totalAmount?: number;
   onPaymentSuccess: () => void;
+  onPaymentError: (error: string) => void;
 }) => {
   const stripe = useStripe();
   const elements = useElements();
@@ -57,19 +59,24 @@ const PaymentForm = ({
     if (!stripe || !elements) return;
 
     setLoading(true);
+    setError(null);
 
-    const { error } = await stripe.confirmPayment({
+    const { error, paymentIntent } = await stripe.confirmPayment({
       elements,
-      confirmParams: {
-        return_url: `${window.location.origin}/payment/${experienceSlug}`,
-      },
+      redirect: "if_required",
     });
 
     if (error) {
-      setError(error.message || "Errore durante il pagamento");
-    } else {
+      const errorMessage = error.message || "Errore durante il pagamento";
+      setError(errorMessage);
+      onPaymentError(errorMessage);
+    } else if (paymentIntent && paymentIntent.status === "succeeded") {
       // Payment successful, show thank you message
       onPaymentSuccess();
+    } else {
+      const errorMessage = "Il pagamento non è stato completato correttamente";
+      setError(errorMessage);
+      onPaymentError(errorMessage);
     }
 
     setLoading(false);
@@ -133,6 +140,7 @@ const Payment = () => {
   const [isCheckingAvailability, setIsCheckingAvailability] =
     useState<boolean>(false);
   const [paymentCompleted, setPaymentCompleted] = useState<boolean>(false);
+  const [paymentError, setPaymentError] = useState<string | null>(null);
 
   useEffect(() => {
     if (experienceSlug) {
@@ -317,6 +325,48 @@ const Payment = () => {
     );
   }
 
+  // Show error message after failed payment
+  if (paymentError) {
+    return (
+      <div className="min-h-screen bg-background pt-24 pb-6 px-6 md:px-10">
+        <div className="max-w-md mx-auto bg-white rounded-lg p-8 text-center">
+          <div className="mb-6">
+            <svg
+              className="mx-auto h-16 w-16 text-red-500"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              aria-hidden="true"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </div>
+
+          <h1 className="text-title font-semibold mb-2 text-red-600">
+            Pagamento non riuscito
+          </h1>
+
+          <p className="text-body text-muted-foreground mb-6">{paymentError}</p>
+
+          <Button
+            onClick={() => {
+              setPaymentError(null);
+              setClientSecret(null);
+            }}
+            className="w-full"
+          >
+            Riprova
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
   if (!clientSecret) {
     return (
       <div className="min-h-screen bg-background pt-24 pb-6 px-6 md:px-10">
@@ -466,6 +516,7 @@ const Payment = () => {
             experienceSlug={experienceSlug!}
             totalAmount={totalAmount ?? undefined}
             onPaymentSuccess={() => setPaymentCompleted(true)}
+            onPaymentError={(error) => setPaymentError(error)}
           />
         </Elements>
       </div>

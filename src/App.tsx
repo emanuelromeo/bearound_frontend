@@ -6,7 +6,6 @@ import routes from "tempo-routes";
 
 // Lazy load payment pages for better performance
 const Payment = lazy(() => import("./pages/Payment"));
-const ThankYou = lazy(() => import("./pages/ThankYou"));
 
 function App() {
   return (
@@ -16,7 +15,6 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/results" element={<Results />} />
           <Route path="/payment/:experienceSlug" element={<Payment />} />
-          <Route path="/thank-you" element={<ThankYou />} />
         </Routes>
         {import.meta.env.VITE_TEMPO === "true" && useRoutes(routes)}
       </>
